@@ -1,14 +1,14 @@
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
-import HeaderTabs from "../components/HeaderTabs";
-import SearchBar from "../components/SearchBar";
-import Categories from "../components/Categories";
+import HeaderTabs from "../components/home/HeaderTabs";
+import SearchBar from "../components/home/SearchBar";
+import Categories from "../components/home/Categories";
 import RestaurantItems, {
   localRestaurants,
-} from "../components/RestaurantItems";
+} from "../components/home/RestaurantItems";
 import { Divider } from "react-native-elements/dist/divider/Divider";
-import BottomTabs from "../components/BottomTabs";
+import BottomTabs from "../components/home/BottomTabs";
 
 const YELP_API_KEY =
   "0njfDCpd0Bgdpy7I7_1ZyziAKn1M_IxbfbvPXq6h27xZk387lNFg7QKiUwSgyRtzvzTT-7iojKTw2zuRadwWVcBWGsHNWZavWQS7EmlPbAQUIrgfs9e1jX9RoGcdYnYx";
@@ -20,8 +20,7 @@ export default function Home() {
 
   const getRestaurantFromYelp = () => {
     const yelpUrl = `https://api.yelp.com/v3/businesses/search?term=restaurant&location=${city}`;
-    console.log(activeTab);
-
+    
     const apiOptions = {
       headers: {
         Authorization: `Bearer ${YELP_API_KEY}`,
