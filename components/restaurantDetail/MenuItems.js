@@ -35,7 +35,7 @@ const foods = [
   {
     title: "Gudeg",
     description:
-      "udeg is made from young unripe jack fruit (Javanese: gori, Indonesian: nangka muda) stewed for several hours with palm sugar, and coconut milk.",
+      "Gudeg is made from young unripe jack fruit (Javanese: gori, Indonesian: nangka muda) stewed for several hours with palm sugar, and coconut milk.",
     price: "$32.50",
     image:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Nasi_Gudeg.jpg/1600px-Nasi_Gudeg.jpg",
