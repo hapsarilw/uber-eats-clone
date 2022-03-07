@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import React from "react";
 import { Divider } from "react-native-elements";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const foods = [
   {
@@ -53,24 +55,37 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: "600",
   },
+  // descriptionStyle: {
+  //   marginRight: 10,
+  // },
 });
+
 export default function MenuItems() {
   return (
-    <ScrollView
-    
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 400 }}
-    >
-      {foods.map((food, index) => (
-        <View key={index}>
-          <View style={styles.menuItemStyle}>
-            <FoodInfo food={food} />
-            <FoodImage food={food} />
+    <View style={{ height: "80%" }}>
+      <ScrollView
+        showsVerticalScrollIndicatora={true}
+        contentContainerStyle={{ paddingBottom: 400 }}
+      >
+        {foods.map((food, index) => (
+          <View key={index}>
+            <View style={styles.menuItemStyle}>
+              <BouncyCheckbox
+                iconStyle={{ borderColor: "lightgray", borderRadius: 0 }}
+                fillColor="green"
+              />
+              <FoodInfo food={food} />
+              <FoodImage food={food} />
+            </View>
+            <Divider
+              width={0.5}
+              orientation="vertical"
+              style={{ marginHorizontal: 20 }}
+            />
           </View>
-          <Divider width={0.5} orientation="vertical" />
-        </View>
-      ))}
-    </ScrollView>
+        ))}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -82,11 +97,15 @@ const FoodInfo = (props) => (
   </View>
 );
 
-const FoodImage = (props) => (
+const FoodImage = ({ ...props }) => (
   <View>
     <Image
       source={{ uri: props.food.image }}
-      style={{ width: 100, height: 100, borderRadius: 8 }}
+      style={{
+        width: 100,
+        height: 100,
+        borderRadius: 8,
+      }}
     />
   </View>
 );
