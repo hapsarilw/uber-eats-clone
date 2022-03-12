@@ -1,16 +1,11 @@
 import React, { useState } from "react";
-import {
-  View,
-  Dimensions,
-  Text,
-  TouchableOpacity,
-  Modal,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import OrderItem from "./OrderItem";
+import firebase from "../../firebase";
+import { NavigationContainer } from "@react-navigation/native";
 
-export default function ViewCart() {
+export default function ViewCart({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   // destructuring
   const { items, restaurantName } = useSelector(
@@ -24,6 +19,17 @@ export default function ViewCart() {
   // return it back to string
   const totalUSD = "\u0024" + total;
   //console.log("VIEW CHART ITEMS => " + JSON.stringify(items));
+
+  const addOrderToFirebase = () => {
+    const db = firebase.firestore();
+    db.collection("orders").add({
+      items: items,
+      restaurantName: restaurantName,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    setModalVisible(false);
+    navigation.navigate('OrderCompleted');
+  };
 
   const styles = StyleSheet.create({
     modalContainer: {
@@ -74,20 +80,33 @@ export default function ViewCart() {
               <Text>{totalUSD}</Text>
             </View>
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
-              <TouchableOpacity style={{
-                marginTop: 20,
-                backgroundColor: 'black',
-                alignItems: 'center',
-                padding: 13,
-                borderRadius: 30,
-                width: 300,
-                position: 'relative'
-              }}
-              onPress={() => setModalVisible(false)}
+              <TouchableOpacity
+                style={{
+                  marginTop: 20,
+                  backgroundColor: "black",
+                  alignItems: "center",
+                  padding: 13,
+                  borderRadius: 30,
+                  width: 300,
+                  position: "relative",
+                }}
+                onPress={() => {
+                  addOrderToFirebase();
+                }}
               >
-                <Text style={{ color: 'white', fontSize: 20 }}>Checkout</Text>
-                <Text style={{ position: 'absolute', right: 20, color: "white", fontSize: 15, top: 17 }}>{total ? totalUSD : "" }</Text>
-              </TouchableOpacity>              
+                <Text style={{ color: "white", fontSize: 20 }}>Checkout</Text>
+                <Text
+                  style={{
+                    position: "absolute",
+                    right: 20,
+                    color: "white",
+                    fontSize: 15,
+                    top: 17,
+                  }}
+                >
+                  {total ? totalUSD : ""}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

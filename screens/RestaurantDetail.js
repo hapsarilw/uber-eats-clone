@@ -15,7 +15,6 @@ export default function RestaurantDetail({ route, navigation }) {
       <ViewCart
         // style={{ position: "absolute", zIndex: 999 }}
         navigation={navigation}
-        restaurantName={route.params.name}
       />
     </SafeAreaView>
   );
