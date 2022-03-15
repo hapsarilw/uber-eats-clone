@@ -3,11 +3,12 @@ import { View, Text, TouchableOpacity, Modal, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import OrderItem from "./OrderItem";
 import firebase from "../../firebase";
-import { NavigationContainer } from "@react-navigation/native";
+import LottieView from "lottie-react-native";
 
-export default function ViewCart({navigation}) {
+export default function ViewCart({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
-  // destructuring
+  const [loading, setLoading] = useState(false);
+
   const { items, restaurantName } = useSelector(
     (state) => state.cartReducer.selectedItems
   );
@@ -16,26 +17,33 @@ export default function ViewCart({navigation}) {
     .map((item) => Number(item.price.replace("$", "")))
     .reduce((prev, curr) => prev + curr, 0);
 
-  // return it back to string
-  const totalUSD = "\u0024" + total;
-  //console.log("VIEW CHART ITEMS => " + JSON.stringify(items));
+  const totalUSD = total.toLocaleString("en", {
+    style: "currency",
+    currency: "USD",
+  });
 
-  const addOrderToFirebase = () => {
+  const addOrderToFireBase = () => {
+    setLoading(true);
     const db = firebase.firestore();
-    db.collection("orders").add({
-      items: items,
-      restaurantName: restaurantName,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-    setModalVisible(false);
-    navigation.navigate('OrderCompleted');
+    db.collection("orders")
+      .add({
+        items: items,
+        restaurantName: restaurantName,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      .then(() => {
+        setTimeout(() => {
+          setLoading(false);
+          navigation.navigate("OrderCompleted");
+        }, 2500);
+      });
   };
 
   const styles = StyleSheet.create({
     modalContainer: {
-      flexGrow: 1,
+      flex: 1,
       justifyContent: "flex-end",
-      backgroundColor: "rgba(0, 0, 0, 0.7)",
+      backgroundColor: "rgba(0,0,0,0.7)",
     },
 
     modalCheckoutContainer: {
@@ -60,7 +68,7 @@ export default function ViewCart({navigation}) {
 
     subtotalText: {
       textAlign: "left",
-      fontWeight: "700",
+      fontWeight: "600",
       fontSize: 15,
       marginBottom: 10,
     },
@@ -91,7 +99,8 @@ export default function ViewCart({navigation}) {
                   position: "relative",
                 }}
                 onPress={() => {
-                  addOrderToFirebase();
+                  addOrderToFireBase();
+                  setModalVisible(false);
                 }}
               >
                 <Text style={{ color: "white", fontSize: 20 }}>Checkout</Text>
@@ -162,6 +171,28 @@ export default function ViewCart({navigation}) {
               <Text style={{ color: "white", fontSize: 20 }}>{totalUSD}</Text>
             </TouchableOpacity>
           </View>
+        </View>
+      ) : (
+        <></>
+      )}
+      {loading ? (
+        <View
+          style={{
+            backgroundColor: "black",
+            position: "absolute",
+            opacity: 0.6,
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          <LottieView
+            style={{ height: 200 }}
+            source={require("../../assets/animations/scanner.json")}
+            autoPlay
+            speed={3}
+          />
         </View>
       ) : (
         <></>
